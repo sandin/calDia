@@ -78,6 +78,19 @@ class CalibrateDiagonal
     }
 
     /**
+     * verifyParam 
+     * 验证参数
+     * 
+     * @access public
+     * @return void
+     */
+    public function verifyParam()
+    {
+        // 三角形任意两边之和大于第三边
+        return ($this->a + $this->b > $this->Y && $this->c + $this->d > $this->X) ? true : false;
+    }
+
+    /**
      * calibrate 校准对角线
      * 
      * @access public
@@ -85,6 +98,8 @@ class CalibrateDiagonal
      */
     public function calibrate()
     {
+        if (!$this->verifyParam()) throw new Exception('参数错误'); 
+
         $loopCount = 0;
 
         if (0 !== $this->a && 0 !== $this->b && 
@@ -139,7 +154,8 @@ class CalibrateDiagonal
         // 1 - $cos^2
         $a = bcsub( '1', bcpow(strval($cos), '2', 8), 8 );
         // 开根号2
-        return floatval(bcsqrt($a, 8));
+        if ($a >= 0)
+            return floatval(bcsqrt($a, 8));
     }
 
     /**
@@ -170,9 +186,12 @@ class CalibrateDiagonal
 
         $tmp = bcadd($a_2, $b_2, 8);     // a^2 + b^2
         $tmp = bcsub($tmp, $ab2cosA, 8); // a^2 + b^2 - 2*a*b*cosA
-        $result = bcsqrt($tmp);
-
-        return floatval($result);
+        if ($tmp > 0) {
+            $result = bcsqrt($tmp);
+            return floatval($result);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -239,6 +258,53 @@ class CalibrateDiagonal
     }
 
     /**
+     * getRad 
+     * 已知三边,求夹角(角度)
+     * 
+     * @param mixed $a 邻边
+     * @param mixed $b 邻边
+     * @param mixed $c 对边
+     * @static
+     * @access public
+     * @return float
+     */
+    public static function getRad($a, $b, $c) {
+        $cos = self::getCos($a, $b, $c);
+        return rad2deg(acos($cos));
+    }
+
+    /**
+     * getAngle 
+     * 只四角形四边和两对角线,求四角(角度)
+     * 
+     * @param mixed $a 
+     * @param mixed $b 
+     * @param mixed $c 
+     * @param mixed $d 
+     * @param mixed $X 
+     * @param mixed $Y 
+     * @static
+     * @access public
+     * @return array
+     */
+    public static function getAngle($a, $b, $c, $d, $X, $Y) {
+        // 右上角
+        $angleA = self::getRad($a, $d, $Y);
+        // 左上角
+        $angleB = self::getRad($a, $b, $X);
+        // 左下角
+        $angleC = self::getRad($b, $c, $Y);
+
+        bcscale(8);
+        $angleD = bcsub('360', $angleA);
+        $angleD = bcsub($angleD, $angleB); 
+        $angleD = bcsub($angleD, $angleC); 
+        $angleD = floatval($angleD);
+
+        return array($angleA, $angleB, $angleC, $angleD);
+    }
+
+    /**
      * loopIt 
      * 递归寻找最优的一组对角线
      * 
@@ -250,10 +316,13 @@ class CalibrateDiagonal
      * @access public
      * @return mixed
      */
-    function loopIt( $a, $b, $c, $d, $X )
+    public function loopIt( $a, $b, $c, $d, $X )
     {
         // 如果递归超过5次,则扩大差值范围
         if ($this->loopCount++ > 5) $e = 6;
+        else if ($this->loopCount > 50) {
+            throw new Exception('递归超时,请检查输入数据');
+        }
         else $e = 5;
 
         // 计算出的对角线长度
@@ -266,6 +335,7 @@ class CalibrateDiagonal
 
         // 如果差值小于5,则停止递归,返回一组对角线
         if ( $diffY <= $e && $diffX <= $e ) {
+            $this->loopCount = 0;
             return array(floatval($X), floatval($B));
         }
         // 如果计算出的对角线 大于 期望对角线

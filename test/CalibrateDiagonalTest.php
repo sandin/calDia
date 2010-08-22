@@ -1,7 +1,7 @@
 <?php
 require_once 'PHPUnit/Framework.php';
 
-require_once 'CalibrateDiagonal.php';
+require_once '../inc/CalibrateDiagonal.php';
 
 /**
  * Test class for CalibrateDiagonal.
@@ -19,6 +19,13 @@ class CalibrateDiagonalTest extends PHPUnit_Framework_TestCase
      */
     protected $object;
 
+    /**
+     * testData 
+     * 测试数据
+     * 
+     * @var mixed
+     * @access protected
+     */
     protected $testData;
 
     /**
@@ -62,7 +69,7 @@ class CalibrateDiagonalTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetCos().
+     *
      */
     public function testGetCos()
     {
