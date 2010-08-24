@@ -187,9 +187,17 @@ class CalibrateDiagonalTest extends PHPUnit_Framework_TestCase
         }
  */
         $realData = array(
+            // 右起 竖1
             array(1035, 910, 1035, 910, 1195, 1530),
             array(1035, 890, 1035, 890, 1180, 1520),
-            array(1035, 900, 1035, 930, 1185, 1545)
+            array(1035, 900, 1035, 930, 1185, 1545),
+
+            // 左起 横1
+            array(1040, 910, 1040, 910, 1535, 1195),
+            array(1010, 910, 1010, 910, 1520, 1175),
+             array(1015, 910, 1015, 910, 1520, 1182),
+            array(1005, 910, 1005, 910, 1510, 1170)
+
         );
 
         foreach ($realData as $data) {
@@ -198,9 +206,9 @@ class CalibrateDiagonalTest extends PHPUnit_Framework_TestCase
             $result = $obj->calibrate();
             //var_dump($result);
 
-            // 差值范围控制在6以下,一般为5以下
-            $this->assertTrue(abs($result[0] - $data[4]) <= 6);
-            $this->assertTrue(abs($result[1] - $data[5]) <= 6);
+            // 差值范围控制在7以下,一般为5以下
+            $this->assertTrue(abs($result[0] - $data[4]) <= 8);
+            $this->assertTrue(abs($result[1] - $data[5]) <= 8);
         }
     }
 }

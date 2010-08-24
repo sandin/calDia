@@ -318,13 +318,6 @@ class CalibrateDiagonal
      */
     public function loopIt( $a, $b, $c, $d, $X )
     {
-        // 如果递归超过5次,则扩大差值范围
-        if ($this->loopCount++ > 5) $e = 6;
-        else if ($this->loopCount > 50) {
-            throw new Exception('递归超时,请检查输入数据');
-        }
-        else $e = 5;
-
         // 计算出的对角线长度
         $B = self::getB($a, $b, $c, $d, $X);
         // 计算出的对角线和期望对角线的差值
@@ -333,15 +326,38 @@ class CalibrateDiagonal
         //var_dump('Y',$diffY);
         //var_dump('X',$X - $this->X);
 
-        // 如果差值小于5,则停止递归,返回一组对角线
-        if ( $diffY <= $e && $diffX <= $e ) {
+        // 递归次数
+        $count = $this->loopCount++;
+        //var_dump($this->loopCount);
+
+        // 随着递归次数增加,而扩大取值范围
+        if ($count <= 5) $e = 5;
+        else if ($count > 5 && $count <= 10) $e = 6;
+        else if ($count > 10 && $count <= 20) $e = 7;
+        else if ($count > 20) {
             $this->loopCount = 0;
-            return array(floatval($X), floatval($B));
+            //throw new Exception('递归超时,请检查输入数据');
+            var_dump(array(floatval($X), floatval($B)), array($diffX, $diffY));
+            return array(floatval($X), floatval($B), array($diffX, $diffY));
+        }
+
+      
+
+        // 如果差值小于5,则停止递归,返回一组对角线
+        if ( abs($diffY - $e) <= 1 && abs($diffX - $e) <= 1 ) {
+        //if ( $diffY <= $e && $diffX <= $e ) {
+            $this->loopCount = 0;
+            var_dump(array(floatval($X), floatval($B)), array($diffX, $diffY));
+            return array(floatval($X), floatval($B), array($diffX, $diffY));
         }
         // 如果计算出的对角线 大于 期望对角线
         else if ($B > $this->Y) $X++; 
         // 如果计算出的对角线 小于 期望对角线
         else if ($B < $this->Y) $X--; 
+        else { 
+            $this->loopCount = 0; 
+            return false;
+        } 
 
         return $this->loopIt( $a, $b, $c, $d, $X );
     }
