@@ -192,11 +192,28 @@ class CalibrateDiagonalTest extends PHPUnit_Framework_TestCase
             array(1035, 890, 1035, 890, 1180, 1520),
             array(1035, 900, 1035, 930, 1185, 1545),
 
+            // 右起 竖2
+            array(1010, 910, 1010, 910, 1180, 1515),
+                //array(1010, 890, 1010, 875, 1160, 1485),
+            array(1010, 930, 1010, 930, 1200, 1528),
+
             // 左起 横1
             array(1040, 910, 1040, 910, 1535, 1195),
             array(1010, 910, 1010, 910, 1520, 1175),
-             array(1015, 910, 1015, 910, 1520, 1182),
-            array(1005, 910, 1005, 910, 1510, 1170)
+            array(1015, 910, 1015, 910, 1520, 1182),
+            array(1005, 910, 1005, 910, 1510, 1170),
+
+            // 左起 横2
+            array(1040, 880, 1040, 880, 1520, 1180),
+            array(1010, 880, 1010, 880, 1490, 1165),
+            array(1015, 880, 1015, 880, 1503, 1170),
+            array(1005, 875, 1005, 875, 1495, 1155),
+
+            // 左起 横3
+            array(1040, 920, 1040, 890, 1550, 1195),
+            array(1010, 915, 1010, 920, 1517, 1195),
+            array(1015, 910, 1015, 910, 1520, 1185),
+            array(1010, 910, 1010, 910, 1520, 1185)
 
         );
 
@@ -207,8 +224,8 @@ class CalibrateDiagonalTest extends PHPUnit_Framework_TestCase
             //var_dump($result);
 
             // 差值范围控制在7以下,一般为5以下
-            $this->assertTrue(abs($result[0] - $data[4]) <= 8);
-            $this->assertTrue(abs($result[1] - $data[5]) <= 8);
+            $this->assertTrue(abs($result['X'] - $data[4]) <= 8);
+            $this->assertTrue(abs($result['Y'] - $data[5]) <= 8);
         }
     }
 }

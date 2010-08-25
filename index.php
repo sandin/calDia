@@ -4,6 +4,15 @@ set_time_limit(10);
 
 include("./inc/CalibrateDiagonal.php");
 
+// 高亮
+function addColor ($if, $var) {
+    if ( $if ) {
+        return "<b><cite>" . $var . "</cite></b>";
+    } else {
+        return "<b><em>" . $var . "</em></b>";
+    }
+}
+
 $error = '';
 
 $inputLoop = array(
@@ -73,8 +82,8 @@ if (isset($_GET['a']) && isset($_GET['b']) && isset($_GET['c']) && isset($_GET['
         $inputLoop[5]['value'] = $Y; // Y
     }
     else if (is_array($result)) {
-        $inputLoop[4]['value'] = $X = $result[0]; // X
-        $inputLoop[5]['value'] = $Y = $result[1]; // Y
+        $inputLoop[4]['value'] = $X = $result['X']; // X
+        $inputLoop[5]['value'] = $Y = $result['Y']; // Y
     }
 
     // 求四个角的度数
@@ -98,7 +107,8 @@ header("Content-type: text/html; charset=utf-8");
 <body>
 
 <div id="wrapper">
-    <div id="error"><?php echo $error ?></div>
+
+<div class="calDia clearfix">
 
     <form id="quo" action="<?php echo $_SERVER['PHP_SELF'] ?>" method="get">
         <div class="quoBox">
@@ -109,6 +119,7 @@ echo <<<HTML
                 <label for="$inputName">$labelText</label>
                 <input id="$inputId" name="$inputName" value="$value" type="text" class="text" autocomplete="off" />
             </div>
+
 HTML;
 }
 if (isset($angles)) {
@@ -117,17 +128,56 @@ if (isset($angles)) {
             <div class="$className angles">
                 $angle&deg;
             </div>
+
 HTML;
     }
 }
 ?>
         </div>
 
-        <input type="submit" value="计算对角线" />
-        <input type="reset" value="清空" />
+        <br />
+        <input type="submit" value="校准对角线" />
+        <a href="index.php">复位</a>
     </form>
 
-</div>
+    <div class="resultBox">
+        <div id="error"><?php echo $error ?></div>
+<?php
+
+if (isset($result)) {
+
+    // 高亮误差较大的结果
+    $status = addColor( (FALSE !== strstr($result['status'], 'OK')), $result['status'] );
+    $diffX  = addColor( ($result['diff'][0] <= 5), $result['diff'][0] );
+    $diffY  = addColor( ($result['diff'][1] <= 5), $result['diff'][1] );
+
+echo <<<HTML
+        <p><span>计算结果</span>: $status</p>
+        <br />
+
+        <p><span>对角线 X</span>: {$result['X']}</p>
+        <p><span>差值</span>:  $diffX</p>
+        <br />
+
+        <p><span>对角线 Y</span>: {$result['Y']}</p>
+        <p><span>差值</span>:  $diffY</p>
+        <br />
+HTML;
+} else {
+    echo "<p>请输入所有数值,然后点击 [校准对角线] </p><br />";
+}
+
+?>
+        <span class="tinyColorBox" style="background:green;"></span>
+        <small>: 误差值在 <b>0 ~ 5</b> 之间</small> &nbsp;&nbsp;&nbsp;
+        <span class="tinyColorBox" style="background:red;"></span>
+        <small>: 误差值超过 <b>5</b></small>
+
+    </div> 
+
+</div><!-- /calDia -->
+
+</div><!-- /wrapper -->
 <body>
 </body>
 </html>

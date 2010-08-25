@@ -11,15 +11,18 @@
     margin: 0 auto;
 }
 
-.quoBox {
-    position: relative;
-    width: 500px;
-    height: 500px;
-    background: url("../img/bg_quoBox.gif") no-repeat;
-    border: 1px #888 solid;
+.calDia {
     margin: 10px 0;
     font-size: 16px;
+}
+
+.quoBox {
+    position: relative;
+    background: url("../img/bg_quoBox.gif") no-repeat;
+    width: 500px;
+    height: 500px;
     font-weight: bold;
+    border: 1px #888 solid;
 }
 .quoBox div {
     position: absolute;
@@ -84,4 +87,37 @@
 }
 .quoBox input.text {
     width: 80px;
+    border: 1px solid #CCC;
+}
+
+#quo {
+    float: left;
+}
+
+.resultBox {
+    float: right;
+    width: 300px;
+    margin-top: 100px;
+    padding: 50px;
+    border: 10px solid #CCC;
+}
+.resultBox p span {
+    display: inline-block;
+    width:  80px;
+}
+.resultBox cite {
+    color: green;
+}
+
+.resultBox ,#quo {
+    /*border: 1px red solid;*/
+}
+
+.tinyColorBox {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    overflow: hidden;
+    margin-right: 5px;
+    border: 1px solid #555;
 }
